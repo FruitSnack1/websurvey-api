@@ -13,7 +13,16 @@ const anketaSchama = new mongoose.Schema({
         default: Date.now
     },
     questions :[
-
+        {
+            question: String,
+            img: String
+        }
+    ],
+    aswers:[
+        {
+            name: String,
+            value: Number
+        }
     ],
     random_order:{
         type:Boolean,

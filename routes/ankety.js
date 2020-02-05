@@ -50,9 +50,7 @@ const rimraf = require('rimraf');
 //   });
 // });
 
-// router.get('/create', authenticateToken, (req, res)=>{
-//   res.render('quiz-create');
-// });
+
 
 // router.delete('/delete/:id', authenticateToken, (req, res)=>{
 //   MongoClient.connect(url, async (err, client) =>{
