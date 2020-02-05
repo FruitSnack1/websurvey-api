@@ -1,69 +1,5 @@
-require('dotenv').config()
-
-var express = require('express');
-var router = express.Router();
-
-const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const rimraf = require('rimraf');
-
-// router.get('/mojeankety', authenticateToken, (req,res) =>{
-//   MongoClient.connect(url, async (err, client) =>{
-//     if (err) return console.log(err);
-//     const db = client.db("quiz");
-//     const collection = db.collection('ankety');
-//     // let ankety = await collection.find({'userId': new mongodb.ObjectId(req.user.id)}).toArray()
-//     let ankety = await collection.aggregate([
-//       {
-//         '$match': {
-//           'userId': new mongodb.ObjectId(req.user.id)
-//         }
-//       }, {
-//         '$lookup': {
-//           'from': 'results',
-//           'localField': '_id',
-//           'foreignField': 'anketaId',
-//           'as': 'results'
-//         }
-//       }, {
-//         '$addFields': {
-//           'resultsCount': {
-//             '$size': '$results'
-//           }
-//         }
-//       }, {
-//         '$project': {
-//           'results': 0
-//         }
-//       }
-//     ]).toArray();
-//     ankety = ankety.map( anketa =>{
-//       const date = new Date(anketa.date);
-//       let text = '';
-//       text+= date.getDate() + '.';
-//       text+= date.getMonth()+1 + '.';
-//       text+= date.getFullYear();
-//       anketa.date = text;
-//       return anketa;
-//     });
-//     res.render('quiz-ankety',{ankety});
-//   });
-// });
 
 
-
-// router.delete('/delete/:id', authenticateToken, (req, res)=>{
-//   MongoClient.connect(url, async (err, client) =>{
-//     if (err) return console.log(err);
-//     const db = client.db("quiz");
-//     const collection = db.collection('ankety');
-//     await collection.deleteOne({'_id': new mongodb.ObjectId(req.params.id)});
-//     rimraf(`public/data/${req.params.id}`, async () => {
-//       const ankety = await collection.find({'userId': new mongodb.ObjectId(req.user.id)}).toArray();
-//       res.render('quiz-ankety',{ankety});
-//     });
-//   });
-// });
 
 // router.post('/create', authenticateToken, (req,res)=>{
 //   console.log(req.body);
@@ -197,16 +133,6 @@ const rimraf = require('rimraf');
 //   });
 // })
 
-// function authenticateToken(req, res, next) {
-//   const token = req.cookies['accessToken'];
-//   if (token == null) return res.sendStatus(401)
-
-//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-//     if (err) return res.sendStatus(403)
-//     req.user = user
-//     next()
-//   })
-// }
 
 // function createAnketaObj(body, id) {
 //   //create object
@@ -266,5 +192,68 @@ const rimraf = require('rimraf');
 //   }
 //   return anketa;
 // }
+
+
+var express = require('express');
+var router = express.Router();
+
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const rimraf = require('rimraf');
+const mongoose = require('mongoose')
+
+const Anketa = require('../models/anketa')
+
+router.post('/', authenticateToken, async (req, res) => {
+    const anketa = new Anketa({
+        name: 'test anketa 4',
+        img: null,
+        questions: [
+            {
+                question: 'Jak se mas ?',
+            },
+            {
+                question: 'Proc mi  nefunguje angular ?',
+            }
+        ],
+        user_id: new mongoose.Types.ObjectId(req.user.id)
+
+    })
+    try {
+        const newAnketa = await anketa.save()
+        res.json(newAnketa)
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+})
+
+router.get('/', authenticateToken, async (req,res)=>{
+    try{
+        const ankety = await Anketa.find()
+        res.json(ankety)
+    }catch(err){
+        res.status(500).json({message:err.message})
+    }
+})
+
+router.delete('/:id', authenticateToken, async (req,res)=>{
+    try{
+        await Anketa.findByIdAndDelete(req.params.id)
+        res.json({message:'Anketa removed'})
+    }catch(err){
+        res.status(500).json({message:err.message})
+    }
+})
+
+function authenticateToken(req, res, next) {
+    const token = req.cookies['accessToken'];
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403)
+        req.user = user
+        next()
+    })
+}
 
 module.exports = router;
