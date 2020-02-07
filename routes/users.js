@@ -43,8 +43,6 @@ router.get('/', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const user = await User.findById(req.body.id)
-    console.log(user);
-
     const hash = crypto.createHash('md5').update(req.body.password).digest('hex')
     if (hash != user.password)
       res.send('wrong password')

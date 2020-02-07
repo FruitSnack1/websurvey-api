@@ -5,6 +5,12 @@ const app = express()
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser');
 
+app.use((req, res, next)=>{
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    next()
+})
+
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))
@@ -14,15 +20,15 @@ app.use(express.json())
 app.use(cookieParser());
 
 const usersRouter = require('./routes/users')
-app.use('/users', usersRouter)
+app.use('/api/users', usersRouter)
 
 const anketyRouter = require('./routes/ankety')
-app.use('/ankety', anketyRouter)
+app.use('/api/ankety', anketyRouter)
 
 const playRouter = require('./routes/play')
-app.use('/play', playRouter)
+app.use('/api/play', playRouter)
 
 const resultsRouter  = require('./routes/results')
-app.use('/results', resultsRouter)
+app.use('/api/results', resultsRouter)
 
-app.listen(3000)
+app.listen(3001)
