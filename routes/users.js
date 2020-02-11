@@ -52,7 +52,6 @@ router.post('/login', async (req, res) => {
     const refreshToken = jwt.sign(tokenUser, process.env.REFRESH_TOKEN_SECRET);
 
     //save refreshToken
-
     res.cookie('accessToken', accessToken);
     res.cookie('refreshToken', refreshToken);
     res.status(200).json({message:'logged in'})

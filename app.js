@@ -4,10 +4,14 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser');
+const cors = require('cors')
+
+app.use(cors({credentials: true, origin: 'http://localhost:4200'}))
 
 app.use((req, res, next)=>{
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Credentials')
+    res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
+    res.header('Access-Control-Allow-Headers', 'Origin, *')
+    res.header('Access-Control-Allow-Credentials', true)
     next()
 })
 
