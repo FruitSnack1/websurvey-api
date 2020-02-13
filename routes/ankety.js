@@ -246,7 +246,11 @@ router.delete('/:id', authenticateToken, async (req,res)=>{
 })
 
 function authenticateToken(req, res, next) {
+    console.log(req.cookies);
+    
     const token = req.cookies['accessToken'];
+    console.log(token);
+    
     if (token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {

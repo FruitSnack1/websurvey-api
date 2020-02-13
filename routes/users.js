@@ -54,12 +54,12 @@ router.post('/login', async (req, res) => {
     //save refreshToken
     res.cookie('accessToken', accessToken);
     res.cookie('refreshToken', refreshToken);
-    res.status(200).json({message:'logged in'})
+    res.status(200).json({message:'logged in', username: user.username })
 
   } catch (err) {
     console.log(err);
 
-    res.status(500).json({ message: err.message })
+    res.status(500).json({ message: err.message})
   }
 })
 
