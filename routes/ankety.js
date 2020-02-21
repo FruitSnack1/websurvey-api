@@ -228,8 +228,9 @@ router.post('/', authenticateToken, async (req, res) => {
 })
 
 router.get('/', authenticateToken, async (req,res)=>{
+    console.log(req.user)
     try{
-        const ankety = await Anketa.find()
+        const ankety = await Anketa.find({user_id: req.user.id})
         res.json(ankety)
     }catch(err){
         res.status(500).json({message:err.message})
