@@ -205,26 +205,28 @@ const mongoose = require('mongoose')
 const Anketa = require('../models/anketa')
 
 router.post('/', authenticateToken, async (req, res) => {
-    const anketa = new Anketa({
-        name: 'test anketa 4',
-        img: null,
-        questions: [
-            {
-                question: 'Jak se mas ?',
-            },
-            {
-                question: 'Proc mi  nefunguje angular ?',
-            }
-        ],
-        user_id: new mongoose.Types.ObjectId(req.user.id)
+    console.log(req.body)
+    res.sendStatus(200)
+    // const anketa = new Anketa({
+    //     name: 'test anketa 4',
+    //     img: null,
+    //     questions: [
+    //         {
+    //             question: 'Jak se mas ?',
+    //         },
+    //         {
+    //             question: 'Proc mi  nefunguje angular ?',
+    //         }
+    //     ],
+    //     user_id: new mongoose.Types.ObjectId(req.user.id)
 
-    })
-    try {
-        const newAnketa = await anketa.save()
-        res.json(newAnketa)
-    } catch (err) {
-        res.status(500).json({ message: err.message })
-    }
+    // })
+    // try {
+    //     const newAnketa = await anketa.save()
+    //     res.json(newAnketa)
+    // } catch (err) {
+    //     res.status(500).json({ message: err.message })
+    // }
 })
 
 router.get('/', authenticateToken, async (req,res)=>{
