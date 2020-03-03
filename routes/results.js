@@ -56,10 +56,10 @@ router.post('/', async (req,res)=>{
   }
 })
 
-router.get('/:anketa_id', authenticateToken, async (req,res) =>{
+router.get('/:id', authenticateToken, async (req,res) =>{
   try{
     const results = await Result.find({
-      anketa_id: req.params.anketa_id
+      anketa_id: req.params.id
     })
     res.json(results)
   }catch(err){
