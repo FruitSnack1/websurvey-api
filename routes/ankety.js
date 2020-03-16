@@ -5,10 +5,11 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const rimraf = require('rimraf');
 const mongoose = require('mongoose')
+const auth = require('../auth.js')
 
 const Anketa = require('../models/anketa')
 
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', auth.authenticateToken, async (req, res) => {
     req.body.user_id = req.user.id
     const anketa = new Anketa(req.body)
     console.log(anketa)
@@ -20,7 +21,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 })
 
-router.get('/', authenticateToken, async (req,res)=>{
+router.get('/', auth.authenticateToken, async (req,res)=>{
     // console.log(req.user)
     try{
         const ankety = await Anketa.find({user_id: req.user.id})
@@ -30,7 +31,7 @@ router.get('/', authenticateToken, async (req,res)=>{
     }
 })
 
-router.get('/:id', authenticateToken, async (req,res)=>{
+router.get('/:id', auth.authenticateToken, async (req,res)=>{
     try{
         const anketa = await Anketa.find({user_id: req.user.id, _id:req.params.id})
         res.json(anketa[0])
@@ -39,7 +40,7 @@ router.get('/:id', authenticateToken, async (req,res)=>{
     }
 })
 
-router.delete('/:id', authenticateToken, async (req,res)=>{
+router.delete('/:id', auth.authenticateToken, async (req,res)=>{
     try{
         await Anketa.findByIdAndDelete(req.params.id)
         res.json({message:'Anketa removed'})
@@ -48,16 +49,5 @@ router.delete('/:id', authenticateToken, async (req,res)=>{
     }
 })
 
-function authenticateToken(req, res, next) {
-    const token = req.cookies['accessToken'];
-    
-    if (token == null) return res.sendStatus(401)
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403)
-        req.user = user
-        next()
-    })
-}
 
 module.exports = router;

@@ -9,6 +9,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const rimraf = require('rimraf');
 const Path = require('path');
+const auth = require('../auth.js')
 // let name = 'karel';
 // let hash = crytpo.createHash('md5').update(name).digest('hex');
 // console.log(hash);
@@ -20,12 +21,12 @@ router.get('/menu', (req, res) => {
   res.render('menu');
 });
 
-router.get('/admin', authenticateToken, (req,res) => {
+router.get('/admin', auth.authenticateToken, (req,res) => {
   console.log(req.user);
   res.render('quiz-index', {user : req.user});
 });
 
-router.get('/dashboard', authenticateToken, (req,res) =>{
+router.get('/dashboard', auth.authenticateToken, (req,res) =>{
   res.render('quiz-index', {user : req.user});
 });
 
@@ -58,18 +59,7 @@ router.get('/jwt', (req, res) => {
   res.send(token);
 });
 
-function authenticateToken(req, res, next) {
 
-  const token = req.cookies['accessToken'];
-  if (token == null) return res.sendStatus(401)
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    console.log(err)
-    if (err) return res.sendStatus(403)
-    req.user = user
-    next()
-  })
-}
 
 router.post('/login', (req, res)=>{
   let pass = req.body.pass;
