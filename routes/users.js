@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/register', async (req, res) => {
-  const salt = Math.random().toString(36).substring(3);
+  const salt = cryptoJs.lib.WordArray.random(128 / 8)
   const hash = cryptoJs.SHA256(req.body.password+ salt).toString()
 
   const user = new User({
@@ -52,7 +52,7 @@ router.post('/register', async (req, res) => {
   } catch (err) {
     res.status(400).json({ message: err.message })
   }
-});
+})
 
 function generateAccessToken(data) {
   return jwt.sign(data, process.env.ACCESS_TOKEN_SECRET)
