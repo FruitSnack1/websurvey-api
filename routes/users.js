@@ -17,9 +17,9 @@ router.get('/', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const user = await User.findById(req.body.id)
-    const hash = cryptoJs.SHA256(req.body.password).toString()
+    const hash = cryptoJs.SHA256(req.body.password+ user.salt).toString()
     if (hash !== user.password)
-      res.send('wrong password')
+      return res.send('wrong password')
 
     const tokenUser = { 'id': user._id, 'username': user.username };
     const accessToken = generateAccessToken(tokenUser);
@@ -38,11 +38,13 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/register', async (req, res) => {
-  const hash = cryptoJs.SHA256(req.body.password).toString()
+  const salt = Math.random().toString(36).substring(3);
+  const hash = cryptoJs.SHA256(req.body.password+ salt).toString()
 
   const user = new User({
     username: req.body.username,
-    password: hash
+    password: hash,
+    salt
   })
   try {
     const newUser = await user.save()
