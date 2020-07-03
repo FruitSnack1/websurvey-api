@@ -1,4 +1,4 @@
-const auth = require('../auth.js') 
+const auth = require('../auth/auth.js/index.js.js') 
 
 var express = require('express');
 var router = express.Router();
@@ -6,7 +6,7 @@ var router = express.Router();
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken');
 
-const Result = require('../models/result')
+const Result = require('../models/result.model')
 
 router.post('/', async (req,res)=>{
   if(!req.body.anketa_id)

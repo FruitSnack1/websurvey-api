@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const rimraf = require('rimraf');
 const mongoose = require('mongoose')
-const auth = require('../auth.js')
+const auth = require('../auth/auth.js/index.js.js.js')
 
-const Anketa = require('../models/anketa')
+const Anketa = require('../models/anketa.model')
 
 router.post('/', auth.authenticateToken, async (req, res) => {
     req.body.user_id = req.user.id
