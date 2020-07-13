@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const questionSchema = new mongoose.Schema({
     question: {
@@ -9,7 +9,7 @@ const questionSchema = new mongoose.Schema({
         type: String,
         default: null
     }
-},{
+}, {
     _id: false
 })
 
@@ -22,7 +22,7 @@ const answerSchema = new mongoose.Schema({
         type: Number,
         default: true
     }
-},{
+}, {
     _id: false
 })
 
@@ -34,17 +34,17 @@ const anketaSchama = new mongoose.Schema({
     img: String,
     description: String,
     date: {
-        type : Date,
+        type: Date,
         required: true,
         default: Date.now
     },
-    questions :{
+    questions: {
         type: [questionSchema],
         required: true
     },
-    answers:{
-        type:[answerSchema],
-        default:[
+    answers: {
+        type: [answerSchema],
+        default: [
             {
                 name: 'Urcite ano',
                 value: 1
@@ -67,17 +67,17 @@ const anketaSchama = new mongoose.Schema({
             },
         ]
     },
-    random_order:{
-        type:Boolean,
-        default:false
+    random_order: {
+        type: Boolean,
+        default: false
     },
-    user_data:{
-        type:Boolean,
-        default:false
+    user_data: {
+        type: Boolean,
+        default: false
     },
     user_id: mongoose.ObjectId,
-},{
+}, {
     collection: 'ankety'
 })
 
-module.exports = mongoose.model('Anketa', anketaSchama)
+export default mongoose.model('Anketa', anketaSchama)

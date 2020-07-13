@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-function authenticateToken(req, res, next) {
+function verifyToken(req, res, next) {
     const token = req.cookies['accessToken'];
     if (token == null) return res.sendStatus(401)
 
@@ -19,4 +19,4 @@ function genereateRefreshToken(data) {
     return jwt.sign(data, process.env.REFRESH_TOKEN_SECRET)
 }
 
-export { generateAccessToken, genereateRefreshToken, authenticateToken }
+export { generateAccessToken, genereateRefreshToken, verifyToken }
