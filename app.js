@@ -8,10 +8,13 @@ import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import router from './router.js'
+import bodyParser from 'body-parser'
 
-app.use(cors({credentials: true, origin: 'http://localhost:4200'}))
+app.use(bodyParser.json({ extended: false }))
 
-app.use((req, res, next)=>{
+app.use(cors({ credentials: true, origin: 'http://localhost:4200' }))
+
+app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
     res.header('Access-Control-Allow-Headers', 'Origin, *')
     res.header('Access-Control-Allow-Credentials', true)

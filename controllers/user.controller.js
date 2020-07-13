@@ -1,11 +1,12 @@
-import generateAccessToken from '../auth/auth.js'
+import { generateAccessToken, genereateRefreshToken } from '../auth/auth.js'
 
 import cryptoJs from 'crypto-js'
 import User from '../models/user.model.js'
 
 class UserController {
-    async login() {
+    async login(req, res) {
         try {
+            console.log(req.body)
             const user = await User.findById(req.body.id)
             const hash = cryptoJs.SHA256(req.body.password + user.salt).toString()
             if (hash !== user.password)
@@ -13,7 +14,7 @@ class UserController {
 
             const tokenUser = { 'id': user._id, 'username': user.username };
             const accessToken = generateAccessToken(tokenUser);
-            const refreshToken = jwt.sign(tokenUser, process.env.REFRESH_TOKEN_SECRET);
+            const refreshToken = generateAccessToken(tokenUser);
 
             //save refreshToken
             res.cookie('accessToken', accessToken);
@@ -27,23 +28,33 @@ class UserController {
         }
     }
 
-    async register() {
-        const salt = cryptoJs.lib.WordArray.random(128 / 8)
-        const hash = cryptoJs.SHA256(req.body.password+ salt).toString()
-      
-        const user = new User({
-          username: req.body.username,
-          password: hash,
-          salt
-        })
+    async register(req, res) {
         try {
-          const newUser = await user.save()
-          res.status(201).json(newUser)
+            console.log(req.body)
+            const salt = cryptoJs.lib.WordArray.random(128 / 8)
+            const hash = cryptoJs.SHA256(req.body.password + salt).toString()
+
+            const user = new User({
+                username: req.body.username,
+                password: hash,
+                salt
+            })
+            const newUser = await user.save()
+            res.status(201).json(newUser)
         } catch (err) {
-          res.status(400).json({ message: err.message })
+            res.status(400).json({ message: err.message })
+        }
+    }
+
+    async getAll(req, res) {
+        try {
+            const users = await User.find({}, '_id username')
+            res.json(users)
+        } catch (err) {
+            res.status(500).json({ message: err.message })
         }
     }
 }
 
-const userController = new UserController();
-export default userController;
+const userController = new UserController()
+export default userController
