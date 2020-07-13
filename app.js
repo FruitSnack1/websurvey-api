@@ -1,4 +1,3 @@
-// import 'dotenv'.config()
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -7,7 +6,7 @@ const app = express()
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import router from './router.js'
+import router from './routes/router.js'
 import bodyParser from 'body-parser'
 
 app.use(bodyParser.json({ extended: false }))
@@ -30,17 +29,5 @@ db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected to Database'))
 
 app.use(express.json())
-
-// const usersRouter = require('./routes/users')
-// app.use('/api/users', usersRouter)
-
-// const anketyRouter = require('./routes/ankety')
-// app.use('/api/ankety', anketyRouter)
-
-// const playRouter = require('./routes/play')
-// app.use('/api/play', playRouter)
-
-// const resultsRouter  = require('./routes/results')
-// app.use('/api/results', resultsRouter)
 
 app.listen(3001)
