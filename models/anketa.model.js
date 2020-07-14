@@ -8,6 +8,10 @@ const questionSchema = new mongoose.Schema({
     img: {
         type: String,
         default: null
+    },
+    open: {
+        type: Boolean,
+        default: false
     }
 }, {
     _id: false

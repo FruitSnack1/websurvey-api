@@ -2,6 +2,7 @@ import Anketa from '../models/anketa.model.js'
 
 class AnketyController {
     async createAnketa(req, res) {
+        console.log(req.body)
         req.body.user_id = req.user.id
         const anketa = new Anketa(req.body)
         console.log(anketa)
