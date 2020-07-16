@@ -28,6 +28,8 @@
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^3.5.2",
         "mongoose": "^5.8.11",
+        "path": "^0.12.7",
+        "qrcode": "^1.4.4",
         "rimraf": "^3.0.1"
     }
 }

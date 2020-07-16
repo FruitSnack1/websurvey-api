@@ -2,15 +2,17 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import express from 'express'
-const app = express()
 import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import router from './routes/router.js'
 import bodyParser from 'body-parser'
+import path from 'path'
+
+const app = express()
 
 app.use(bodyParser.json({ extended: false }))
-
+app.use(express.static('public'))
 app.use(cors({ credentials: true, origin: 'http://localhost:4200' }))
 
 app.use((req, res, next) => {
