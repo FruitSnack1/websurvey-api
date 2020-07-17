@@ -1,8 +1,11 @@
 import Anketa from '../models/anketa.model.js'
 import qrcode from 'qrcode'
+import fs from 'fs'
 
 class AnketyController {
     async createAnketa(req, res) {
+        console.log(req.files)
+        console.log(req.body)
         req.body.user_id = req.user.id
         const anketa = new Anketa(req.body)
         try {
@@ -41,8 +44,7 @@ class AnketyController {
     }
 
     async getQRCode(req, res) {
-        console.log(req.params.id)
-        qrcode.toFile(`public/images/qrcodes/${req.params.id}.png`, `localhost:3001/play/${req.params.id}`, () => {
+        qrcode.toFile(`public/qrcodes/${req.params.id}.png`, `localhost:3001/play/${req.params.id}`, () => {
             res.redirect(`http://localhost:3001/qrcodes/${req.params.id}.png`)
         })
     }

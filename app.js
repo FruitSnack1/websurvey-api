@@ -7,13 +7,14 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import router from './routes/router.js'
 import bodyParser from 'body-parser'
-import path from 'path'
+import fileUpload from 'express-fileupload'
 
 const app = express()
 
 app.use(bodyParser.json({ extended: false }))
 app.use(express.static('public'))
 app.use(cors({ credentials: true, origin: 'http://localhost:4200' }))
+app.use(fileUpload())
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:4200')

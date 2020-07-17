@@ -1,6 +1,11 @@
 import mongoose from 'mongoose'
 
 const questionSchema = new mongoose.Schema({
+    id: {
+        type: mongoose.ObjectId,
+        required: true,
+        default: mongoose.Types.ObjectId()
+    },
     question: {
         type: String,
         required: true
