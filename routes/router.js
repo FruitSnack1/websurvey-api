@@ -1,6 +1,9 @@
 import express from 'express'
 const router = express.Router()
 
+import multer from 'multer'
+const upload = multer({ dest: '../public/images/' })
+
 import { verifyToken } from '../auth/auth.js'
 
 import userController from '../controllers/user.controller.js'
@@ -13,7 +16,7 @@ router.post('/api/users/login', userController.login)
 router.post('/api/users/register', userController.register)
 
 router.get('/api/ankety', verifyToken, anketyController.getAll)
-router.post('/api/ankety', verifyToken, anketyController.createAnketa)
+router.post('/api/ankety', verifyToken, upload.single('img0'), anketyController.createAnketa)
 router.get('/api/ankety/:id', verifyToken, anketyController.getOne)
 router.delete('/api/ankety/:id', verifyToken, anketyController.deleteAnketa)
 router.get('/api/ankety/:id/qr', anketyController.getQRCode)

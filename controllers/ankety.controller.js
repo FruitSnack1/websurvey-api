@@ -1,11 +1,16 @@
 import Anketa from '../models/anketa.model.js'
 import qrcode from 'qrcode'
 import fs from 'fs'
+import multer from 'multer'
+
+const upload = multer({ dest: '../public/images' })
 
 class AnketyController {
     async createAnketa(req, res) {
         console.log(req.files)
-        console.log(req.body)
+        console.log(req.body.anketa)
+        const obj = JSON.parse(req.body.anketa)
+        console.log(obj);
         req.body.user_id = req.user.id
         const anketa = new Anketa(req.body)
         try {
