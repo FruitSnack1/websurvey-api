@@ -1,18 +1,22 @@
 import Anketa from '../models/anketa.model.js'
 import qrcode from 'qrcode'
-import fs from 'fs'
-import multer from 'multer'
-
-const upload = multer({ dest: '../public/images' })
+import mongoose from 'mongoose'
 
 class AnketyController {
     async createAnketa(req, res) {
-        console.log(req.files)
-        console.log(req.body.anketa)
         const obj = JSON.parse(req.body.anketa)
-        console.log(obj);
-        req.body.user_id = req.user.id
-        const anketa = new Anketa(req.body)
+        if (req.files) {
+            for (let i = 0; i < obj.questions.length; i++) {
+                obj.questions[i].id = mongoose.Types.ObjectId()
+                const path = `./public/images/${obj.questions[i].id}.png`
+                if (!req.files[`img${i}`])
+                    continue
+                obj.questions[i].img = path.substring(8, path.length)
+                req.files[`img${i}`].mv(path)
+            }
+        }
+        obj.user_id = req.user.id
+        const anketa = new Anketa(obj)
         try {
             const newAnketa = await anketa.save()
             res.status(201).json(newAnketa)
