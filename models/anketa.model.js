@@ -6,10 +6,9 @@ const questionSchema = new mongoose.Schema({
         required: true,
         default: mongoose.Types.ObjectId()
     },
-    question: {
-        type: String,
-        required: true
-    },
+    cs: String,
+    en: String,
+    de: String,
     img: {
         type: String,
         default: null
@@ -23,10 +22,12 @@ const questionSchema = new mongoose.Schema({
 })
 
 const answerSchema = new mongoose.Schema({
-    name: {
+    cs: {
         type: String,
         required: true
     },
+    en: String,
+    de: String,
     value: {
         type: Number,
         default: true
@@ -35,13 +36,19 @@ const answerSchema = new mongoose.Schema({
     _id: false
 })
 
+const nameSchema = new mongoose.Schema({
+    cs: String,
+    en: String,
+    de: String
+})
+
 const anketaSchama = new mongoose.Schema({
     name: {
-        type: String,
+        type: nameSchema,
         required: true
     },
     img: String,
-    description: String,
+    description: nameSchema,
     date: {
         type: Date,
         required: true,
