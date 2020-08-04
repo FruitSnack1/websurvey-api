@@ -7,7 +7,6 @@ class AnketyController {
         const obj = JSON.parse(req.body.anketa)
         if (req.files) {
             for (let i = 0; i < obj.questions.length; i++) {
-                obj.questions[i].id = mongoose.Types.ObjectId()
                 const path = `./public/images/${obj.questions[i].id}.png`
                 if (!req.files[`img${i}`])
                     continue

@@ -1,11 +1,6 @@
 import mongoose from 'mongoose'
 
 const questionSchema = new mongoose.Schema({
-    id: {
-        type: mongoose.ObjectId,
-        required: true,
-        default: mongoose.Types.ObjectId()
-    },
     cs: String,
     en: String,
     de: String,
@@ -17,8 +12,6 @@ const questionSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-}, {
-    _id: false
 })
 
 const answerSchema = new mongoose.Schema({
@@ -40,6 +33,8 @@ const nameSchema = new mongoose.Schema({
     cs: String,
     en: String,
     de: String
+}, {
+    _id: false
 })
 
 const anketaSchama = new mongoose.Schema({
