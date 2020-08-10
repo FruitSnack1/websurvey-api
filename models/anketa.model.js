@@ -78,6 +78,7 @@ const anketaSchama = new mongoose.Schema({
             },
         ]
     },
+    languages: [],
     random_order: {
         type: Boolean,
         default: false
