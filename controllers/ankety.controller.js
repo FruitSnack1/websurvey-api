@@ -18,6 +18,8 @@ class AnketyController {
         const anketa = new Anketa(obj)
         try {
             const newAnketa = await anketa.save()
+            qrcode.toFile(`public/qrcodes/${newAnketa._id}.png`, `localhost:4200/play/${newAnketa._id}`, () => {
+            })
             res.status(201).json(newAnketa)
         } catch (err) {
             res.status(400).json({ err: err.message })
@@ -51,11 +53,6 @@ class AnketyController {
         }
     }
 
-    async getQRCode(req, res) {
-        qrcode.toFile(`public/qrcodes/${req.params.id}.png`, `localhost:3001/play/${req.params.id}`, () => {
-            res.redirect(`http://localhost:3001/qrcodes/${req.params.id}.png`)
-        })
-    }
 }
 
 const anketyController = new AnketyController()

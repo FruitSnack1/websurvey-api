@@ -19,7 +19,6 @@ router.get('/api/ankety', verifyToken, anketyController.getAll)
 router.post('/api/ankety', verifyToken, anketyController.createAnketa)
 router.get('/api/ankety/:id', verifyToken, anketyController.getOne)
 router.delete('/api/ankety/:id', verifyToken, anketyController.deleteAnketa)
-router.get('/api/ankety/:id/qr', anketyController.getQRCode)
 
 router.get('/api/results/:id', verifyToken, resultsController.getAnketaResults)
 router.post('/api/results', resultsController.postAnketaResult)
