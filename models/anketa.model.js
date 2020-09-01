@@ -1,9 +1,10 @@
 import mongoose from 'mongoose'
 
 const questionSchema = new mongoose.Schema({
-    cs: String,
-    en: String,
-    de: String,
+    question: {
+        type: Map,
+        of: String
+    },
     img: {
         type: String,
         default: null
@@ -15,12 +16,10 @@ const questionSchema = new mongoose.Schema({
 })
 
 const answerSchema = new mongoose.Schema({
-    cs: {
-        type: String,
-        required: true
+    answer: {
+        type: Map,
+        of: String
     },
-    en: String,
-    de: String,
     value: {
         type: Number,
         default: true
@@ -29,21 +28,17 @@ const answerSchema = new mongoose.Schema({
     _id: false
 })
 
-const nameSchema = new mongoose.Schema({
-    cs: String,
-    en: String,
-    de: String
-}, {
-    _id: false
-})
-
 const anketaSchama = new mongoose.Schema({
     name: {
-        type: nameSchema,
+        type: Map,
+        of: String,
         required: true
     },
     img: String,
-    description: nameSchema,
+    description: {
+        type: Map,
+        of: String,
+    },
     date: {
         type: Date,
         required: true,
@@ -55,30 +50,10 @@ const anketaSchama = new mongoose.Schema({
     },
     answers: {
         type: [answerSchema],
-        default: [
-            {
-                name: 'Urcite ano',
-                value: 1
-            },
-            {
-                name: 'Spise ano',
-                value: 2
-            },
-            {
-                name: 'Nevim',
-                value: 3
-            },
-            {
-                name: 'Spise ne',
-                value: 4
-            },
-            {
-                name: 'Urcite ne',
-                value: 5
-            },
-        ]
     },
-    languages: [],
+    languages: [{
+        type: String
+    }],
     random_order: {
         type: Boolean,
         default: false
