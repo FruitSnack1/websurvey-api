@@ -9,16 +9,27 @@ import router from './routes/router.js'
 import bodyParser from 'body-parser'
 import fileUpload from 'express-fileupload'
 
+const PROD = ((process.env.ENV == 'PROD') ? true : false)
+
+if (PROD) console.log('Server running in production settings')
+else console.log('Server running in devel settings')
+
 const app = express()
 
 app.use(bodyParser.json({ extended: false }))
 app.use(express.static('public'))
-app.use(cors({ credentials: true, origin: 'http://localhost:4200' }))
+if (PROD)
+    app.use(cors({ credentials: true, origin: 'http://localhost' }))
+else
+    app.use(cors({ credentials: true, origin: 'http://localhost:4200' }))
+
 app.use(fileUpload())
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
-    res.header('Access-Control-Allow-Headers', 'Origin, *')
+    if (PROD)
+        res.header('Access-Control-Allow-Origin', 'http://localhost')
+    else
+        res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
     res.header('Access-Control-Allow-Credentials', true)
     next()
 })
