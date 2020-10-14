@@ -23,7 +23,11 @@ const resultSchema = new mongoose.Schema({
         type: mongoose.ObjectId,
         required: true
     },
-    lang: String
+    lang: String,
+    pin: {
+        type: String,
+        required: false
+    }
 })
 
 resultSchema.methods.getFullTime = () => {

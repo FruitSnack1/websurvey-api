@@ -47,6 +47,8 @@ class UserController {
     }
 
     async getAll(req, res) {
+        console.log(req.cookies['pin'])
+        console.log(req.cookies['accessToken'])
         try {
             const users = await User.find({}, '_id username')
             res.json(users)
