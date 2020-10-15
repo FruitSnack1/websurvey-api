@@ -8,6 +8,8 @@ import cors from 'cors'
 import router from './routes/router.js'
 import bodyParser from 'body-parser'
 import fileUpload from 'express-fileupload'
+import https from 'https'
+import fs from 'fs'
 
 const PROD = ((process.env.ENV == 'PROD') ? true : false)
 
@@ -44,4 +46,12 @@ db.once('open', () => console.log('Connected to Database'))
 
 app.use(express.json())
 
-app.listen(3001)
+if (PROD) {
+    const options = {
+        key: fs.readFileSync('./cert.key'),
+        cert: fs.readFileSync('./cert.crt')
+    }
+    https.createServer(options).listen(3001)
+} else {
+    app.listen(3001)
+}
