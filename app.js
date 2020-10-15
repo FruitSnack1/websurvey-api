@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(bodyParser.json({ extended: false }))
 app.use(express.static('public'))
 if (PROD)
-    app.use(cors({ credentials: true, origin: 'http://skodaquiz.com' }))
+    app.use(cors({ credentials: true, origin: 'https://skodaquiz.com' }))
 else
     app.use(cors({ credentials: true, origin: 'http://localhost:4200' }))
 
@@ -30,7 +30,7 @@ app.use(fileUpload())
 
 app.use((req, res, next) => {
     if (PROD)
-        res.header('Access-Control-Allow-Origin', 'http://skodaquiz.com')
+        res.header('Access-Control-Allow-Origin', 'https://skodaquiz.com')
     else
         res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
     res.header('Access-Control-Allow-Credentials', true)
