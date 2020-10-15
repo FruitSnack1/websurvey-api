@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(bodyParser.json({ extended: false }))
 app.use(express.static('public'))
 if (PROD)
-    app.use(cors({ credentials: true, origin: 'http://localhost' }))
+    app.use(cors({ credentials: true, origin: 'http://168.119.116.61' }))
 else
     app.use(cors({ credentials: true, origin: 'http://localhost:4200' }))
 
@@ -28,7 +28,7 @@ app.use(fileUpload())
 
 app.use((req, res, next) => {
     if (PROD)
-        res.header('Access-Control-Allow-Origin', 'http://localhost')
+        res.header('Access-Control-Allow-Origin', 'http://168.119.116.61')
     else
         res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
     res.header('Access-Control-Allow-Credentials', true)
