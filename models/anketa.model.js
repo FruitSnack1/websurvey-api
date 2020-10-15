@@ -62,6 +62,10 @@ const anketaSchama = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    theme: {
+        type: String,
+        default: null
+    },
     user_id: mongoose.ObjectId,
 }, {
     collection: 'ankety'
