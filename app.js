@@ -51,7 +51,7 @@ if (PROD) {
         key: fs.readFileSync('./cert.key'),
         cert: fs.readFileSync('./cert.crt')
     }
-    https.createServer(options).listen(3001)
+    https.createServer(options, app).listen(3001)
 } else {
     app.listen(3001)
 }
