@@ -1,52 +1,68 @@
 import Anketa from '../models/anketa.model.js'
+import OpenSurvey from '../models/openSurvey.model.js'
 import qrcode from 'qrcode'
 import mongoose from 'mongoose'
 
 class AnketyController {
     async createAnketa(req, res) {
         const obj = JSON.parse(req.body.anketa)
-        const languages = obj.languages
-        for (let propName in obj.name) {
-            if (!languages.includes(propName)) {
-                delete obj.name[propName]
+        if (obj.type === 1) {
+            const languages = obj.languages
+            for (let propName in obj.name) {
+                if (!languages.includes(propName)) {
+                    delete obj.name[propName]
+                }
             }
-        }
-        for (let propName in obj.description) {
-            if (!languages.includes(propName))
-                delete obj.description[propName]
-        }
-        for (let i = 0; i < obj.answers.length; i++) {
-            for (let propName in obj.answers[i].answer) {
+            for (let propName in obj.description) {
                 if (!languages.includes(propName))
-                    delete obj.answers[i].answer[propName]
+                    delete obj.description[propName]
             }
-        }
-        for (let i = 0; i < obj.questions.length; i++) {
-            for (let propName in obj.questions[i].question) {
-                if (!languages.includes(propName))
-                    delete obj.questions[i].question[propName]
+            for (let i = 0; i < obj.answers.length; i++) {
+                for (let propName in obj.answers[i].answer) {
+                    if (!languages.includes(propName))
+                        delete obj.answers[i].answer[propName]
+                }
             }
-        }
-        if (req.files) {
             for (let i = 0; i < obj.questions.length; i++) {
-                obj.questions[i]._id = new mongoose.Types.ObjectId()
-                const path = `./public/images/${obj.questions[i]._id}.png`
-                if (!req.files[`img${i}`])
-                    continue
-                obj.questions[i].img = path.substring(8, path.length)
-                req.files[`img${i}`].mv(path)
+                for (let propName in obj.questions[i].question) {
+                    if (!languages.includes(propName))
+                        delete obj.questions[i].question[propName]
+                }
+            }
+            if (req.files) {
+                for (let i = 0; i < obj.questions.length; i++) {
+                    obj.questions[i]._id = new mongoose.Types.ObjectId()
+                    const path = `./public/images/${obj.questions[i]._id}.png`
+                    if (!req.files[`img${i}`])
+                        continue
+                    obj.questions[i].img = path.substring(8, path.length)
+                    req.files[`img${i}`].mv(path)
+                }
+            }
+            obj.user_id = req.user.id
+            const anketa = new Anketa(obj)
+            try {
+                const newAnketa = await anketa.save()
+                qrcode.toFile(`public/qrcodes/${newAnketa._id}.png`, `localhost:4200/play/${newAnketa._id}`, () => {
+                })
+                res.status(201).json(newAnketa)
+            } catch (err) {
+                res.status(400).json({ err: err.message })
             }
         }
-        obj.user_id = req.user.id
-        const anketa = new Anketa(obj)
-        try {
-            const newAnketa = await anketa.save()
-            qrcode.toFile(`public/qrcodes/${newAnketa._id}.png`, `localhost:4200/play/${newAnketa._id}`, () => {
-            })
-            res.status(201).json(newAnketa)
-        } catch (err) {
-            res.status(400).json({ err: err.message })
+        if (obj.type === 2) {
+            obj.user_id = req.user.id
+            try {
+                const anketa = new Anketa(obj)
+                const newSurvey = await anketa.save()
+                qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `localhost:4200/play/${newSurvey._id}`, () => {
+                })
+                res.status(201).json(newSurvey)
+            } catch (err) {
+                res.status(400).json({ err: err.message })
+            }
         }
+
     }
 
     async updateSurvey(req, res) {
