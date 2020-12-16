@@ -67,50 +67,60 @@ class AnketyController {
 
     async updateSurvey(req, res) {
         const obj = JSON.parse(req.body.anketa)
-        const languages = obj.languages
-        for (let propName in obj.name) {
-            if (!languages.includes(propName)) {
-                delete obj.name[propName]
+        if (obj.type === 2) {
+            try {
+                const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
+                res.status(201).json(updatedSurvey)
+            } catch (err) {
+                res.status(400).json({ err: err.message })
             }
-        }
-        for (let propName in obj.description) {
-            if (!languages.includes(propName))
-                delete obj.description[propName]
-        }
-        for (let i = 0; i < obj.answers.length; i++) {
-            for (let propName in obj.answers[i].answer) {
+        } else {
+
+            const languages = obj.languages
+            for (let propName in obj.name) {
+                if (!languages.includes(propName)) {
+                    delete obj.name[propName]
+                }
+            }
+            for (let propName in obj.description) {
                 if (!languages.includes(propName))
-                    delete obj.answers[i].answer[propName]
+                    delete obj.description[propName]
             }
-        }
-        for (let i = 0; i < obj.questions.length; i++) {
-            for (let propName in obj.questions[i].question) {
-                if (!languages.includes(propName))
-                    delete obj.questions[i].question[propName]
+            for (let i = 0; i < obj.answers.length; i++) {
+                for (let propName in obj.answers[i].answer) {
+                    if (!languages.includes(propName))
+                        delete obj.answers[i].answer[propName]
+                }
             }
-        }
-        if (req.files) {
             for (let i = 0; i < obj.questions.length; i++) {
-                obj.questions[i]._id = new mongoose.Types.ObjectId()
-                if (!req.files[`img${i}`])
-                    continue
-                const path = `./public/images/${obj.questions[i]._id}.png`
-                obj.questions[i].img = path.substring(8, path.length)
-                req.files[`img${i}`].mv(path)
+                for (let propName in obj.questions[i].question) {
+                    if (!languages.includes(propName))
+                        delete obj.questions[i].question[propName]
+                }
             }
-        }
-        obj.user_id = req.user.id
-        console.log(obj)
-        try {
-            const survey = await Anketa.findById(req.params.id);
-            for (let i = 0; i < obj.questions.length; i++) {
-                if (!obj.questions.img && survey.questions.length >= obj.questions.length)
-                    obj.questions[i].img = survey.questions[i].img
+            if (req.files) {
+                for (let i = 0; i < obj.questions.length; i++) {
+                    obj.questions[i]._id = new mongoose.Types.ObjectId()
+                    if (!req.files[`img${i}`])
+                        continue
+                    const path = `./public/images/${obj.questions[i]._id}.png`
+                    obj.questions[i].img = path.substring(8, path.length)
+                    req.files[`img${i}`].mv(path)
+                }
             }
-            const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
-            res.status(201).json(updatedSurvey)
-        } catch (err) {
-            res.status(400).json({ err: err.message })
+            obj.user_id = req.user.id
+            console.log(obj)
+            try {
+                const survey = await Anketa.findById(req.params.id);
+                for (let i = 0; i < obj.questions.length; i++) {
+                    if (!obj.questions.img && survey.questions.length >= obj.questions.length)
+                        obj.questions[i].img = survey.questions[i].img
+                }
+                const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
+                res.status(201).json(updatedSurvey)
+            } catch (err) {
+                res.status(400).json({ err: err.message })
+            }
         }
     }
 
