@@ -11,6 +11,7 @@ import playController from '../controllers/play.controller.js'
 router.get('/api/users', userController.getAll)
 router.post('/api/users/login', userController.login)
 router.post('/api/users/register', userController.register)
+router.post('/api/users/changeusername', verifyToken, userController.changeUsername)
 
 router.get('/api/ankety', anketyController.getAll)
 router.post('/api/ankety', verifyToken, anketyController.createAnketa)

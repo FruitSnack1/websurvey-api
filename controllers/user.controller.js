@@ -56,6 +56,17 @@ class UserController {
             res.status(500).json({ message: err.message })
         }
     }
+
+    async changeUsername(req, res) {
+        try {
+            const user = await User.findById(req.user.id);
+            user.username = req.body.username
+            user.save()
+            res.json({ username: user.username })
+        } catch (err) {
+            req.status(400).json({ message: err.message })
+        }
+    }
 }
 
 const userController = new UserController()
