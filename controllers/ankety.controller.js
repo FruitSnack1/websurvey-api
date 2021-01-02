@@ -51,6 +51,16 @@ class AnketyController {
             }
         }
         if (obj.type === 2) {
+            if (req.files) {
+                for (let i = 0; i < obj.questions.length; i++) {
+                    obj.questions[i]._id = new mongoose.Types.ObjectId()
+                    const path = `./public/images/${obj.questions[i]._id}.png`
+                    if (!req.files[`img${i}`])
+                        continue
+                    obj.questions[i].img = path.substring(8, path.length)
+                    req.files[`img${i}`].mv(path)
+                }
+            }
             obj.user_id = req.user.id
             try {
                 const anketa = new Anketa(obj)
@@ -68,7 +78,23 @@ class AnketyController {
     async updateSurvey(req, res) {
         const obj = JSON.parse(req.body.anketa)
         if (obj.type === 2) {
+            if (req.files) {
+                for (let i = 0; i < obj.questions.length; i++) {
+                    obj.questions[i]._id = new mongoose.Types.ObjectId()
+                    if (!req.files[`img${i}`])
+                        continue
+                    const path = `./public/images/${obj.questions[i]._id}.png`
+                    obj.questions[i].img = path.substring(8, path.length)
+                    req.files[`img${i}`].mv(path)
+                }
+            }
+
             try {
+                const survey = await Anketa.findById(req.params.id);
+                for (let i = 0; i < obj.questions.length; i++) {
+                    if (!obj.questions.img && survey.questions.length >= obj.questions.length)
+                        obj.questions[i].img = survey.questions[i].img
+                }
                 const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
                 res.status(201).json(updatedSurvey)
             } catch (err) {
