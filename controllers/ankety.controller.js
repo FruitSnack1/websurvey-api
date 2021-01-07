@@ -78,6 +78,7 @@ class AnketyController {
     async updateSurvey(req, res) {
         const obj = JSON.parse(req.body.anketa)
         if (obj.type === 2) {
+            console.log(req.files)
             if (req.files) {
                 for (let i = 0; i < obj.questions.length; i++) {
                     obj.questions[i]._id = new mongoose.Types.ObjectId()
@@ -92,7 +93,7 @@ class AnketyController {
             try {
                 const survey = await Anketa.findById(req.params.id);
                 for (let i = 0; i < obj.questions.length; i++) {
-                    if (!obj.questions.img && survey.questions.length >= obj.questions.length)
+                    if (!obj.questions[i].img && survey.questions.length >= obj.questions.length)
                         obj.questions[i].img = survey.questions[i].img
                 }
                 const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
