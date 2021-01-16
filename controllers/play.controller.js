@@ -1,5 +1,4 @@
 import Anketa from '../models/anketa.model.js'
-import OpenSurvey from '../models/openSurvey.model.js'
 
 class PlayController {
     async getAnketa(req, res) {

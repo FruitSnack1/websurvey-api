@@ -16,6 +16,11 @@ const questionSchema = new mongoose.Schema({
     answers: {
         type: [String],
         required: false
+    },
+    other_answer: {
+        type: Boolean,
+        required: true,
+        default: false
     }
 })
 

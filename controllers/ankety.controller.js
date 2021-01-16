@@ -1,5 +1,4 @@
 import Anketa from '../models/anketa.model.js'
-import OpenSurvey from '../models/openSurvey.model.js'
 import qrcode from 'qrcode'
 import mongoose from 'mongoose'
 
