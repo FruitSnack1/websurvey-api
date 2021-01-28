@@ -73,6 +73,7 @@ const anketaSchama = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    user_data_fields: [String],
     theme: {
         type: String,
         default: null

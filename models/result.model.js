@@ -17,6 +17,13 @@ const answerSchema = new mongoose.Schema({
     _id: false
 })
 
+const userDataSchema = new mongoose.Schema({
+    key: String,
+    value: String
+}, {
+    _id: false
+})
+
 const resultSchema = new mongoose.Schema({
     answers: [answerSchema],
     anketa_id: {
@@ -27,7 +34,8 @@ const resultSchema = new mongoose.Schema({
     pin: {
         type: String,
         required: false
-    }
+    },
+    user_data: [userDataSchema]
 })
 
 resultSchema.methods.getFullTime = () => {
