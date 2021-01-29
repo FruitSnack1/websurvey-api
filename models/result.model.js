@@ -5,10 +5,7 @@ const answerSchema = new mongoose.Schema({
         type: mongoose.ObjectId,
         required: true
     },
-    answer: {
-        type: String,
-        required: true
-    },
+    answer: String,
     time: {
         type: Number,
         required: true
