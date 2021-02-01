@@ -152,7 +152,7 @@ class AnketyController {
 
     async getAll(req, res) {
         try {
-            const ankety = await Anketa.find()
+            const ankety = await Anketa.find({ user_id: req.user.id })
             res.json(ankety)
         } catch (err) {
             res.status(500).json({ message: err.message })
