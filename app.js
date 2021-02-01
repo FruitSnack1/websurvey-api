@@ -28,6 +28,12 @@ else
 
 app.use(fileUpload())
 
+//public/images
+if (!fs.existsSync('./public')) fs.mkdirSync('./public')
+if (!fs.existsSync('./public/images')) fs.mkdirSync('./public/images')
+if (!fs.existsSync('./public/qrcodes')) fs.mkdirSync('./public/qrcodes')
+
+
 app.use((req, res, next) => {
     if (PROD)
         res.header('Access-Control-Allow-Origin', 'https://skodaquiz.com')
