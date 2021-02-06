@@ -5,6 +5,7 @@ const questionSchema = new mongoose.Schema({
         type: Map,
         of: String
     },
+    description: String,
     img: {
         type: String,
         default: null
@@ -21,7 +22,8 @@ const questionSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
-    }
+    },
+    type: String
 })
 
 const answerSchema = new mongoose.Schema({
