@@ -23,7 +23,8 @@ const questionSchema = new mongoose.Schema({
         required: true,
         default: false
     },
-    type: String
+    type: String,
+    limit: Number
 })
 
 const answerSchema = new mongoose.Schema({
