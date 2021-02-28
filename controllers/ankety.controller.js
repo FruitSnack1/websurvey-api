@@ -152,7 +152,25 @@ class AnketyController {
 
     async getAll(req, res) {
         try {
-            const ankety = await Anketa.find({ user_id: req.user.id })
+            const ankety = await Anketa.aggregate([{
+                $lookup: {
+                    from: 'results',
+                    localField: '_id',
+                    foreignField: 'anketa_id',
+                    as: 'results'
+                }
+            }, {
+                $addFields: {
+                    result_count: {
+                        $size: '$results'
+                    }
+                }
+            }, {
+                $project: {
+                    results: 0
+                }
+            }
+            ])
             res.json(ankety)
         } catch (err) {
             res.status(500).json({ message: err.message })
