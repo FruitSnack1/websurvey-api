@@ -179,7 +179,33 @@ class AnketyController {
 
     async getOne(req, res) {
         try {
-            const anketa = await Anketa.find({ user_id: req.user.id, _id: req.params.id })
+            // const anketa = await Anketa.find({ user_id: req.user.id, _id: req.params.id })
+            const anketa = await Anketa.aggregate([
+                {
+                    $match: {
+                        _id: mongoose.Types.ObjectId(req.params.id)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'results',
+                        localField: '_id',
+                        foreignField: 'anketa_id',
+                        as: 'results'
+                    }
+                }, {
+                    $addFields: {
+                        result_count: {
+                            $size: '$results'
+                        }
+                    }
+                }, {
+                    $project: {
+                        results: 0
+                    }
+                }
+            ])
+            console.log(anketa);
             res.json(anketa[0])
         } catch (err) {
             res.status(500).json({ message: err.message })

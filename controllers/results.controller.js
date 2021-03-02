@@ -28,9 +28,17 @@ class ResultController {
     }
 
     async getAllResults(req, res) {
-        console.log('cc');
         try {
             const results = await Result.find()
+            res.json(results)
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+    }
+
+    async deleteSurveyResults(req, res) {
+        try {
+            const results = await Result.deleteMany({ anketa_id: req.params.id })
             res.json(results)
         } catch (err) {
             res.status(500).json({ message: err.message })
