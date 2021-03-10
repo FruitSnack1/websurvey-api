@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+const Schema = mongoose.Schema
 
 const answerSchema = new mongoose.Schema({
     question_id: {
@@ -24,8 +25,9 @@ const userDataSchema = new mongoose.Schema({
 const resultSchema = new mongoose.Schema({
     answers: [answerSchema],
     anketa_id: {
-        type: mongoose.ObjectId,
-        required: true
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Anketa'
     },
     lang: String,
     pin: {

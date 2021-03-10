@@ -23,6 +23,7 @@ router.get('/api/results/:id', verifyToken, resultsController.getAnketaResults)
 router.post('/api/raw/results', resultsController.getAllResults)
 router.post('/api/results', resultsController.postAnketaResult)
 router.delete('/api/results/delete/:id', verifyToken, resultsController.deleteSurveyResults)
+router.get('/api/results/:id/excel', resultsController.getExcelResults)
 
 router.get('/api/play/:id', playController.getAnketa)
 

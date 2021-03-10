@@ -151,25 +151,31 @@ class AnketyController {
     }
 
     async getAll(req, res) {
+        console.log(req.user)
         try {
-            const ankety = await Anketa.aggregate([{
-                $lookup: {
-                    from: 'results',
-                    localField: '_id',
-                    foreignField: 'anketa_id',
-                    as: 'results'
-                }
-            }, {
-                $addFields: {
-                    result_count: {
-                        $size: '$results'
+            const ankety = await Anketa.aggregate([
+                {
+                    $match: {
+                        user_id: mongoose.Types.ObjectId(req.user.id)
+                    }
+                }, {
+                    $lookup: {
+                        from: 'results',
+                        localField: '_id',
+                        foreignField: 'anketa_id',
+                        as: 'results'
+                    }
+                }, {
+                    $addFields: {
+                        result_count: {
+                            $size: '$results'
+                        }
+                    }
+                }, {
+                    $project: {
+                        results: 0
                     }
                 }
-            }, {
-                $project: {
-                    results: 0
-                }
-            }
             ])
             res.json(ankety)
         } catch (err) {
