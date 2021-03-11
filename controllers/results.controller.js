@@ -1,4 +1,5 @@
 import Result from '../models/result.model.js'
+import Anketa from '../models/anketa.model.js'
 import mongoose from 'mongoose'
 import excel from 'excel4node'
 import fs from 'fs'
@@ -50,9 +51,11 @@ class ResultController {
 
     async getExcelResults(req, res) {
         try {
-            const results = await Result.find({ anketa_id: req.params.id }).populate('answers.question_id')
+            const results = await Result.find({ anketa_id: req.params.id })
+            const survey = await (await Anketa.findOne({ _id: req.params.id })).toJSON()
 
-            console.log(results[0].answers)
+
+            console.log(results)
 
             let excelFile = new excel.Workbook()
             let ws = excelFile.addWorksheet('Results')
@@ -61,12 +64,11 @@ class ResultController {
 
             for (let i = 0; i < results.length; i++) {
                 const row = i + 2
-
                 ws.cell(row, 1).string(String(results[i]._id))
             }
 
             if (!fs.existsSync('./tmp')) fs.mkdirSync('./tmp')
-            const filename = `Results_${req.params.id}`
+            const filename = `Results_${survey.name.cs}`
             excelFile.write(`./tmp/${filename}.xlsx`, () => {
                 res.sendFile(`${appRoot}/tmp/${filename}.xlsx`)
             })
