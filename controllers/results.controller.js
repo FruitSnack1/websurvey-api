@@ -54,24 +54,42 @@ class ResultController {
             const results = await Result.find({ anketa_id: req.params.id })
             const survey = await (await Anketa.findOne({ _id: req.params.id })).toJSON()
 
-
-            console.log(results)
+            const question = (id) => {
+                id = String(id)
+                for (let q of survey.questions) {
+                    if (q._id == id) return q
+                }
+            }
 
             let excelFile = new excel.Workbook()
             let ws = excelFile.addWorksheet('Results')
 
             ws.cell(1, 1).string('id')
+            ws.cell(1, 2).string('otazka')
+            ws.cell(1, 3).string('popis otazky')
+            ws.cell(1, 4).string('odpoved')
+            ws.cell(1, 5).string('cas')
 
+            let row = 2
             for (let i = 0; i < results.length; i++) {
-                const row = i + 2
-                ws.cell(row, 1).string(String(results[i]._id))
+                for (let j = 0; j < results[i].answers.length; j++) {
+                    ws.cell(row, 1).string(String(results[i]._id))
+                    ws.cell(row, 2).string(question(results[i].answers[j].question_id).question.cs)
+                    ws.cell(row, 3).string(question(results[i].answers[j].question_id).description)
+                    ws.cell(row, 4).string(results[i].answers[j].answer[0])
+                    ws.cell(row, 5).number(results[i].answers[j].time)
+                    row++
+                }
             }
 
             if (!fs.existsSync('./tmp')) fs.mkdirSync('./tmp')
             const filename = `Results_${survey.name.cs}`
             excelFile.write(`./tmp/${filename}.xlsx`, () => {
                 res.sendFile(`${appRoot}/tmp/${filename}.xlsx`)
+                // fs.rm(`${appRoot}/tmp/${filename}.xlsx`)
             })
+
+
 
         } catch (err) {
             res.status(500).json({ message: err.message })
