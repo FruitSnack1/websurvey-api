@@ -53,11 +53,12 @@ db.once('open', () => console.log('Connected to Database'))
 app.use(express.json())
 
 if (PROD) {
-    const options = {
-        key: fs.readFileSync('./cert.key'),
-        cert: fs.readFileSync('./cert.crt')
-    }
-    https.createServer(options, app).listen(3001)
+    app.listen(3001)
+    // const options = {
+    //     key: fs.readFileSync('./cert.key'),
+    //     cert: fs.readFileSync('./cert.crt')
+    // }
+    // https.createServer(options, app).listen(3001)
 } else {
     app.listen(3001)
 }
