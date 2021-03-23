@@ -17,6 +17,7 @@ class UserController {
             const refreshToken = generateAccessToken(tokenUser);
 
             //save refreshToken
+            res.header('Access-Control-Allow-Credentials', true)
             res.cookie('accessToken', accessToken);
             res.cookie('refreshToken', refreshToken);
             res.status(200).json({ message: 'logged in', username: user.username })
