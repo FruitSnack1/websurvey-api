@@ -20,6 +20,8 @@ class UserController {
             res.header('Access-Control-Allow-Credentials', true)
             res.cookie('accessToken', accessToken, { path: '/', httpOnly: true });
             res.cookie('refreshToken', refreshToken, { path: '/', httpOnly: true });
+            res.cookie('test', 'test', { path: '/', httpOnly: false });
+            res.cookie('test2', 'test2', { path: '/', httpOnly: true });
             res.status(200).json({ message: 'logged in', username: user.username })
 
         } catch (err) {
