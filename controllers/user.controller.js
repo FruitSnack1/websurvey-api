@@ -8,6 +8,7 @@ class UserController {
         try {
             console.log(req.body)
             const user = await User.findById(req.body.id)
+            const { username } = user
             const hash = cryptoJs.SHA256(req.body.password + user.salt).toString()
             if (hash !== user.password)
                 return res.send('wrong password')
@@ -17,12 +18,7 @@ class UserController {
             const refreshToken = generateAccessToken(tokenUser);
 
             //save refreshToken
-            res.header('Access-Control-Allow-Credentials', true)
-            res.cookie('accessToken', accessToken, { path: '/', httpOnly: true, domain: 'skodaquiz.com' });
-            res.cookie('refreshToken', refreshToken, { path: '/', httpOnly: true, domain: 'skodaquiz.com' });
-            res.cookie('test', 'test', { path: '/', httpOnly: false });
-            res.cookie('test2', 'test2', { path: '/', httpOnly: true });
-            res.status(200).json({ message: 'logged in', username: user.username })
+            res.status(200).json({ message: 'logged in', username, accessToken })
 
         } catch (err) {
             console.log(err);
@@ -50,8 +46,6 @@ class UserController {
     }
 
     async getAll(req, res) {
-        console.log(req.cookies['pin'])
-        console.log(req.cookies['accessToken'])
         try {
             const users = await User.find({}, '_id username')
             res.json(users)
