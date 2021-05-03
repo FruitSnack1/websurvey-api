@@ -27,6 +27,7 @@ const questionSchema = new mongoose.Schema({
     limit: Number,
     scale_end: Number,
     scale_start: Number
+
 })
 
 const answerSchema = new mongoose.Schema({
@@ -87,6 +88,10 @@ const anketaSchama = new mongoose.Schema({
     type: {
         required: true,
         type: Number
+    },
+    enabled: {
+        type: Boolean,
+        default: true
     }
 }, {
     collection: 'ankety'

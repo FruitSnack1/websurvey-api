@@ -227,6 +227,16 @@ class AnketyController {
         }
     }
 
+    async enableSurvey(req, res) {
+        try {
+            console.log(req.body)
+            const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, { enabled: req.body.enabled })
+            res.json(updatedSurvey)
+        } catch (error) {
+            res.status(500).json({ message: err.message })
+        }
+    }
+
 }
 
 const anketyController = new AnketyController()
