@@ -1,6 +1,7 @@
 import Anketa from '../models/anketa.model.js'
 import qrcode from 'qrcode'
 import mongoose from 'mongoose'
+import fs from 'fs'
 
 class AnketyController {
     async createAnketa(req, res) {
@@ -220,6 +221,13 @@ class AnketyController {
 
     async deleteAnketa(req, res) {
         try {
+            const survey = await Anketa.findById(req.params.id)
+            for (let question of survey.questions) {
+                console.log(question.img)
+                if (question.img)
+                    fs.unlink(`public${question.img}`, err => { if (err) console.log(err) })
+            }
+
             await Anketa.findByIdAndDelete(req.params.id)
             res.json({ message: 'Anketa removed' })
         } catch (err) {
