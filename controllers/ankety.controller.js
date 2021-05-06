@@ -43,7 +43,7 @@ class AnketyController {
             const anketa = new Anketa(obj)
             try {
                 const newAnketa = await anketa.save()
-                qrcode.toFile(`public/qrcodes/${newAnketa._id}.png`, `https://skodaquiz.com/play/${newAnketa._id}`, () => {
+                qrcode.toFile(`public/qrcodes/${newAnketa._id}.png`, `https://skodaquiz.com/play/${newAnketa._id}`, { width: 1024 }, () => {
                 })
                 res.status(201).json(newAnketa)
             } catch (err) {
@@ -65,7 +65,7 @@ class AnketyController {
             try {
                 const anketa = new Anketa(obj)
                 const newSurvey = await anketa.save()
-                qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `localhost:4200/play/${newSurvey._id}`, () => {
+                qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `localhost:4200/play/${newSurvey._id}`, { width: 1024 }, () => {
                 })
                 res.status(201).json(newSurvey)
             } catch (err) {
