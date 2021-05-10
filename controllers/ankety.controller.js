@@ -2,6 +2,9 @@ import Anketa from '../models/anketa.model.js'
 import qrcode from 'qrcode'
 import mongoose from 'mongoose'
 import fs from 'fs'
+import imagemin from 'imagemin'
+import imageminPngquant from 'imagemin-pngquant'
+import imageminJpegtran from 'imagemin-jpegtran'
 
 class AnketyController {
     async createAnketa(req, res) {
@@ -54,11 +57,25 @@ class AnketyController {
             if (req.files) {
                 for (let i = 0; i < obj.questions.length; i++) {
                     obj.questions[i]._id = new mongoose.Types.ObjectId()
-                    const path = `./public/images/${obj.questions[i]._id}.png`
+                    let path = `./public/images/${obj.questions[i]._id}.png`
                     if (!req.files[`img${i}`])
                         continue
                     obj.questions[i].img = path.substring(8, path.length)
-                    req.files[`img${i}`].mv(path)
+                    req.files[`img${i}`].mv(path, err => {
+                        if (err) console.log(err)
+                        path = path.substring(2)
+                        imagemin([path], {
+                            destination: 'public/images',
+                            plugins: [
+                                imageminPngquant({
+                                    quality: [0.3, 0.5]
+                                }),
+                                imageminJpegtran({
+                                    progressive: true
+                                })
+                            ]
+                        })
+                    })
                 }
             }
             obj.user_id = req.user.id
