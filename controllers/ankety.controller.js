@@ -113,6 +113,7 @@ class AnketyController {
                     if (!obj.questions[i].img && survey.questions.length >= obj.questions.length)
                         obj.questions[i].img = survey.questions[i].img
                 }
+                obj.updated = Date.now()
                 const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
                 res.status(201).json(updatedSurvey)
             } catch (err) {
@@ -160,6 +161,7 @@ class AnketyController {
                     if (!obj.questions.img && survey.questions.length >= obj.questions.length)
                         obj.questions[i].img = survey.questions[i].img
                 }
+                obj.updated = Date.now()
                 const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
                 res.status(201).json(updatedSurvey)
             } catch (err) {

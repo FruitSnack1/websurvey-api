@@ -59,6 +59,11 @@ const anketaSchama = new mongoose.Schema({
         required: true,
         default: Date.now
     },
+    updated: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
     questions: {
         type: [questionSchema],
         required: true
