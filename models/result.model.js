@@ -34,7 +34,12 @@ const resultSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    user_data: [userDataSchema]
+    user_data: [userDataSchema],
+    date: {
+        required: true,
+        default: Date.now,
+        type: Date
+    }
 })
 
 resultSchema.methods.getFullTime = () => {
