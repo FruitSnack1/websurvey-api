@@ -62,13 +62,21 @@ class ResultController {
             }
 
             let excelFile = new excel.Workbook()
-            let ws = excelFile.addWorksheet('Results')
+            let ws = excelFile.addWorksheet('Výsledky')
 
-            ws.cell(1, 1).string('id')
-            ws.cell(1, 2).string('otazka')
-            ws.cell(1, 3).string('popis otazky')
-            ws.cell(1, 4).string('odpoved')
-            ws.cell(1, 5).string('cas')
+            const style = excelFile.createStyle({
+                font: {
+                    bold: true
+                }
+            })
+
+            ws.cell(1, 1).string('id').style(style)
+            ws.cell(1, 2).string('Otázka').style(style)
+            ws.cell(1, 3).string('Popis otázky').style(style)
+            ws.cell(1, 4).string('Typ otázky').style(style)
+            ws.cell(1, 5).string('Odpověď').style(style)
+            ws.cell(1, 6).string('Datum').style(style)
+            ws.cell(1, 7).string('Čas odpovědi').style(style)
 
             let row = 2
             for (let i = 0; i < results.length; i++) {
@@ -76,16 +84,22 @@ class ResultController {
                     ws.cell(row, 1).string(String(results[i]._id))
                     ws.cell(row, 2).string(question(results[i].answers[j].question_id).question.cs)
                     ws.cell(row, 3).string(question(results[i].answers[j].question_id).description)
-                    ws.cell(row, 4).string(results[i].answers[j].answer[0])
-                    ws.cell(row, 5).number(results[i].answers[j].time)
+                    let type
+                    if (question(results[i].answers[j].question_id).type == 'single') type = 'Výběr z možností'
+                    if (question(results[i].answers[j].question_id).type == 'open') type = 'Otevřená otázka'
+                    if (question(results[i].answers[j].question_id).type == 'scale') type = 'Škála'
+                    ws.cell(row, 4).string(type)
+                    ws.cell(row, 5).string(results[i].answers[j].answer[0])
+                    ws.cell(row, 6).date(new Date(results[i].date)).style({ numberFormat: 'dd.mm.yyyy' })
+                    ws.cell(row, 7).number(results[i].answers[j].time)
                     row++
                 }
             }
 
             if (!fs.existsSync('./tmp')) fs.mkdirSync('./tmp')
-            const filename = `Results_${survey.name.cs}`
+            const filename = `Results_${survey._id}`
             excelFile.write(`./tmp/${filename}.xlsx`, () => {
-                res.sendFile(`${appRoot}/tmp/${filename}.xlsx`)
+                res.download(`${appRoot}/tmp/${filename}.xlsx`, `${survey.name.cs}_výsledky.xlsx`)
                 // fs.rm(`${appRoot}/tmp/${filename}.xlsx`)
             })
 
