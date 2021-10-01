@@ -264,6 +264,19 @@ class AnketyController {
         }
     }
 
+    async duplicateSurvey(req, res) {
+        try {
+            const survey = await Anketa.findById(req.params.id).exec()
+            survey._id = new mongoose.Types.ObjectId()
+            survey.name = { cs: `${survey.name.get('cs')} kopie` }
+            survey.isNew = true
+            const newSurvey = await survey.save()
+            res.json(newSurvey)
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+    }
+
 }
 
 const anketyController = new AnketyController()
