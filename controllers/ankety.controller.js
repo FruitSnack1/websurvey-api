@@ -271,6 +271,7 @@ class AnketyController {
             survey.name = { cs: `${survey.name.get('cs')} kopie` }
             survey.isNew = true
             const newSurvey = await survey.save()
+            qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `https://skodaquiz.com/play/${newSurvey._id}`, { width: 1024 }, () => { })
             res.json(newSurvey)
         } catch (err) {
             res.status(500).json({ message: err.message })
