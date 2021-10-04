@@ -1,4 +1,5 @@
 import Anketa from '../models/anketa.model.js'
+import User from '../models/user.model.js'
 import qrcode from 'qrcode'
 import mongoose from 'mongoose'
 import fs from 'fs'
@@ -201,6 +202,17 @@ class AnketyController {
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
+    }
+
+    async getIvetSurveys(req, res) {
+        try {
+            const { id } = await User.findOne({ username: 'IVET' })
+            const surveys = await Anketa.find({ user_id: id })
+            res.json(surveys)
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+
     }
 
     async getOne(req, res) {
