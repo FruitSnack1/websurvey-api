@@ -11,7 +11,7 @@ class UserController {
             const { username } = user
             const hash = cryptoJs.SHA256(req.body.password + user.salt).toString()
             if (hash !== user.password)
-                return res.send('wrong password')
+                return res.json({message: 'wrong password'})
 
             const tokenUser = { 'id': user._id, 'username': user.username };
             const accessToken = generateAccessToken(tokenUser);
