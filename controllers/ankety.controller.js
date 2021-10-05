@@ -1,4 +1,5 @@
 import Anketa from '../models/anketa.model.js'
+import User from '../models/user.model.js'
 import qrcode from 'qrcode'
 import mongoose from 'mongoose'
 import fs from 'fs'
@@ -203,6 +204,17 @@ class AnketyController {
         }
     }
 
+    async getIvetSurveys(req, res) {
+        try {
+            const { id } = await User.findOne({ username: 'IVET' })
+            const surveys = await Anketa.find({ user_id: id })
+            res.json(surveys)
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+
+    }
+
     async getOne(req, res) {
         try {
             // const anketa = await Anketa.find({ user_id: req.user.id, _id: req.params.id })
@@ -260,6 +272,20 @@ class AnketyController {
             const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, { enabled: req.body.enabled })
             res.json(updatedSurvey)
         } catch (error) {
+            res.status(500).json({ message: err.message })
+        }
+    }
+
+    async duplicateSurvey(req, res) {
+        try {
+            const survey = await Anketa.findById(req.params.id).exec()
+            survey._id = new mongoose.Types.ObjectId()
+            survey.name = { cs: `${survey.name.get('cs')} kopie` }
+            survey.isNew = true
+            const newSurvey = await survey.save()
+            qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `https://skodaquiz.com/play/${newSurvey._id}`, { width: 1024 }, () => { })
+            res.json(newSurvey)
+        } catch (err) {
             res.status(500).json({ message: err.message })
         }
     }
