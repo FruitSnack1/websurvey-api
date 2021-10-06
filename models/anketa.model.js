@@ -26,7 +26,8 @@ const questionSchema = new mongoose.Schema({
     type: String,
     limit: Number,
     scale_end: Number,
-    scale_start: Number
+    scale_start: Number,
+    required: Boolean
 
 })
 
