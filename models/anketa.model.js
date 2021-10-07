@@ -106,7 +106,11 @@ const anketaSchama = new mongoose.Schema({
     enabled: {
         type: Boolean,
         default: true
-    }
+    },
+    ivet: {
+        type: Boolean,
+        default: false
+    },
 }, {
     collection: 'ankety'
 })
