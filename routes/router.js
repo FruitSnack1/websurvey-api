@@ -14,7 +14,7 @@ router.post('/api/users/register', userController.register)
 router.post('/api/users/changeusername', verifyToken, userController.changeUsername)
 
 router.get('/api/ankety', verifyToken, anketyController.getAll)
-router.get('/api/ankety/ivet', verifyToken, anketyController.getIvetSurveys)
+router.get('/api/ankety/ivet', anketyController.getIvetSurveys)
 router.post('/api/ankety', verifyToken, anketyController.createAnketa)
 router.get('/api/ankety/:id', verifyToken, anketyController.getOne)
 router.delete('/api/ankety/:id', verifyToken, anketyController.deleteAnketa)
