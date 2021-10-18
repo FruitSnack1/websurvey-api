@@ -11,14 +11,14 @@ class UserController {
             const { username } = user
             const hash = cryptoJs.SHA256(req.body.password + user.salt).toString()
             if (hash !== user.password)
-                return res.json({message: 'wrong password'})
+                return res.json({ message: 'wrong password' })
 
             const tokenUser = { 'id': user._id, 'username': user.username };
             const accessToken = generateAccessToken(tokenUser);
             const refreshToken = generateAccessToken(tokenUser);
 
             //save refreshToken
-            res.status(200).json({ message: 'logged in', username, accessToken })
+            res.status(200).json({ message: 'logged in', username, accessToken, id: user._id })
 
         } catch (err) {
             console.log(err);

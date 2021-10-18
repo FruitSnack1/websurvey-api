@@ -22,7 +22,7 @@ router.put('/api/ankety/:id', verifyToken, anketyController.updateSurvey)
 router.put('/api/ankety/:id/enabled', verifyToken, anketyController.enableSurvey)
 router.post('/api/ankety/duplicate/:id', verifyToken, anketyController.duplicateSurvey)
 
-router.get('/api/results/excelAll', resultsController.getAllExcelResults)
+router.get('/api/results/excelAll/:userId', resultsController.getAllExcelResults)
 router.get('/api/results/:id', verifyToken, resultsController.getAnketaResults)
 router.post('/api/raw/results', resultsController.getAllResults)
 router.post('/api/results', resultsController.postAnketaResult)

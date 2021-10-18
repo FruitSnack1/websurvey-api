@@ -71,6 +71,8 @@ class ResultController {
     }
 
     async getAllExcelResults(req, res) {
+        console.log('asdfasdf')
+        console.log(req.params.userId)
         try {
             const surveys = await Anketa.find({})
             let excelFile = await excelHelper.generateExcel()
