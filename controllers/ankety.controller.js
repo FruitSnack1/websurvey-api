@@ -87,7 +87,7 @@ class AnketyController {
                 const newSurvey = await anketa.save()
                 qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `https://skodaquiz.com/play/${newSurvey._id}`, { width: 1024 }, () => {
                 })
-                logService.logAction('create', req, newAnketa.toJSON().name.cs)
+                logService.logAction('create', req, newSurvey.toJSON().name.cs)
                 res.status(201).json(newSurvey)
             } catch (err) {
                 res.status(400).json({ err: err.message })
