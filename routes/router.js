@@ -7,6 +7,7 @@ import userController from '../controllers/user.controller.js'
 import anketyController from '../controllers/ankety.controller.js'
 import resultsController from '../controllers/results.controller.js'
 import playController from '../controllers/play.controller.js'
+import logController from '../controllers/log.controller.js'
 
 router.get('/api/users', userController.getAll)
 router.post('/api/users/login', userController.login)
@@ -30,6 +31,8 @@ router.delete('/api/results/:id', verifyToken, resultsController.deleteSurveyRes
 router.get('/api/results/:id/excel', resultsController.getExcelResults)
 
 router.get('/api/play/:id', playController.getAnketa)
+
+router.get('/logs', logController.getLogs)
 
 
 export default router

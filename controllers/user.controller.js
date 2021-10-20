@@ -2,11 +2,11 @@ import { generateAccessToken, genereateRefreshToken } from '../auth/auth.js'
 
 import cryptoJs from 'crypto-js'
 import User from '../models/user.model.js'
+import logService from '../services/log.service.js'
 
 class UserController {
     async login(req, res) {
         try {
-            console.log(req.body)
             const user = await User.findById(req.body.id)
             const { username } = user
             const hash = cryptoJs.SHA256(req.body.password + user.salt).toString()
@@ -16,8 +16,9 @@ class UserController {
             const tokenUser = { 'id': user._id, 'username': user.username };
             const accessToken = generateAccessToken(tokenUser);
             const refreshToken = generateAccessToken(tokenUser);
-
+            req.user = tokenUser
             //save refreshToken
+            logService.login(req)
             res.status(200).json({ message: 'logged in', username, accessToken, id: user._id })
 
         } catch (err) {
