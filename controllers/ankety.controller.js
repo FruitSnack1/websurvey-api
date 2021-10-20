@@ -6,6 +6,7 @@ import fs from 'fs'
 import imagemin from 'imagemin'
 import imageminPngquant from 'imagemin-pngquant'
 import imageminJpegtran from 'imagemin-jpegtran'
+import logService from '../services/log.service.js'
 
 class AnketyController {
     async createAnketa(req, res) {
@@ -49,6 +50,7 @@ class AnketyController {
                 const newAnketa = await anketa.save()
                 qrcode.toFile(`public/qrcodes/${newAnketa._id}.png`, `https://skodaquiz.com/play/${newAnketa._id}`, { width: 1024 }, () => {
                 })
+                logService.logAction('create', req, newAnketa.toJSON().name.cs)
                 res.status(201).json(newAnketa)
             } catch (err) {
                 res.status(400).json({ err: err.message })
@@ -85,6 +87,7 @@ class AnketyController {
                 const newSurvey = await anketa.save()
                 qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `https://skodaquiz.com/play/${newSurvey._id}`, { width: 1024 }, () => {
                 })
+                logService.logAction('create', req, newAnketa.toJSON().name.cs)
                 res.status(201).json(newSurvey)
             } catch (err) {
                 res.status(400).json({ err: err.message })
@@ -116,6 +119,7 @@ class AnketyController {
                 }
                 obj.updated = Date.now()
                 const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
+                logService.logAction('update', req, updatedSurvey.toJSON().name.cs)
                 res.status(201).json(updatedSurvey)
             } catch (err) {
                 res.status(400).json({ err: err.message })
@@ -155,7 +159,6 @@ class AnketyController {
                 }
             }
             obj.user_id = req.user.id
-            console.log(obj)
             try {
                 const survey = await Anketa.findById(req.params.id);
                 for (let i = 0; i < obj.questions.length; i++) {
@@ -164,6 +167,7 @@ class AnketyController {
                 }
                 obj.updated = Date.now()
                 const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
+                logService.logAction('update', req, updatedSurvey.toJSON().name.cs)
                 res.status(201).json(updatedSurvey)
             } catch (err) {
                 res.status(400).json({ err: err.message })
@@ -243,7 +247,6 @@ class AnketyController {
                     }
                 }
             ])
-            console.log(anketa);
             res.json(anketa[0])
         } catch (err) {
             res.status(500).json({ message: err.message })
@@ -259,7 +262,8 @@ class AnketyController {
                     fs.unlink(`public${question.img}`, err => { if (err) console.log(err) })
             }
 
-            await Anketa.findByIdAndDelete(req.params.id)
+            const deleted = await Anketa.findByIdAndDelete(req.params.id)
+            logService.logAction('delete', req, deleted.toJSON().name.cs)
             res.json({ message: 'Anketa removed' })
         } catch (err) {
             res.status(500).json({ message: err.message })
@@ -284,6 +288,7 @@ class AnketyController {
             survey.isNew = true
             const newSurvey = await survey.save()
             qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `https://skodaquiz.com/play/${newSurvey._id}`, { width: 1024 }, () => { })
+            logService.logAction('create', req, newSurvey.toJSON().name.cs)
             res.json(newSurvey)
         } catch (err) {
             res.status(500).json({ message: err.message })

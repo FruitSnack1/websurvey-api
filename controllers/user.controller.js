@@ -18,7 +18,7 @@ class UserController {
             const refreshToken = generateAccessToken(tokenUser);
             req.user = tokenUser
             //save refreshToken
-            logService.login(req)
+            logService.logAction('login',req)
             res.status(200).json({ message: 'logged in', username, accessToken, id: user._id })
 
         } catch (err) {

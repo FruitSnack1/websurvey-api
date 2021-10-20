@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import fs from 'fs'
 import appRoot from 'app-root-path'
 import excelHelper from '../helpers/excel.helper.js'
+import logService from '../services/log.service.js'
 
 class ResultController {
     async getAnketaResults(req, res) {
@@ -20,11 +21,13 @@ class ResultController {
     async postAnketaResult(req, res) {
         if (!req.body.anketa_id)
             res.json({ message: 'Missing anketa id' })
+        const survey = await Anketa.findOne({_id: req.body.anketa_id})
         req.body.anketa_id = new mongoose.Types.ObjectId(req.body.anketa_id)
         if (req.cookies['pin'])
-            req.body.pin = req.cookies['pin']
+        req.body.pin = req.cookies['pin']
         try {
             const newResult = await new Result(req.body).save()
+            logService.logAction('result', req, survey.toJSON().name.cs)
             res.json(newResult)
         } catch (err) {
             res.status(500).json({ message: err.message })

@@ -2,16 +2,19 @@ import Log from '../models/log.model.js'
 import geoip from 'geoip-lite'
 
 class LogService{
-    async login(req){
+    async logAction(action, req, survey = ''){
+        console.log('saving log')
         try {
             const geo = geoip.lookup(req.headers['x-forwarded-for'] || req.connection.remoteAddress)
-            const log = new Log({
-                action: 'login',
-                user: req.user.id,
+            const log = {
+                action,
                 ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-                city: geo?.city ? geo?.city : '-'
-            })
-            await log.save()
+                city: geo?.city ? geo?.city : '-',
+                survey
+            }
+            if(req.user)
+                log.user = req.user.id
+            await new Log(log).save()
         } catch (err) {
             console.log(err)            
         }

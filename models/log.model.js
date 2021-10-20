@@ -4,13 +4,15 @@ const logSchema = new mongoose.Schema({
     date: {
         type: Date,
         required: true,
-        default: Date.now()
+        default: Date.now
     },
     action: String,
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: false
     },
+    survey: String,
     ip: String,
     city:String
 })
