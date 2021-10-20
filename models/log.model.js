@@ -11,7 +11,8 @@ const logSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    ip: String
+    ip: String,
+    city:String
 })
 
 export default mongoose.model('Log', logSchema)
