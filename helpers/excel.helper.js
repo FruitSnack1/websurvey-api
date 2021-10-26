@@ -36,8 +36,8 @@ class ExcelHelper {
                 }
             }
             return file
-        } catch (error) {
-            console.log(error)
+        } catch (err) {
+            console.log(err)
         }
         
     }

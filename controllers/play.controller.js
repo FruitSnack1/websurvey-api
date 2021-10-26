@@ -1,13 +1,13 @@
-import Anketa from '../models/anketa.model.js'
+import playService from '../services/play.service.js'
 
 class PlayController {
     async getAnketa(req, res) {
         try {
-            const anketa = await Anketa.findById(req.params.id)
-            if (anketa.enabled === false)
+            const survey = await playService.getSurvey(req.params.id)
+            if (survey.enabled === false)
                 res.json({ enabled: false })
             else
-                res.json(anketa)
+                res.json(survey)
         } catch (err) {
             res.status(500).json({ message: err.message })
         }

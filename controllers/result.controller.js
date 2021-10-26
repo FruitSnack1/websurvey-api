@@ -1,34 +1,27 @@
-import Result from '../models/result.model.js'
-import Anketa from '../models/anketa.model.js'
-import mongoose from 'mongoose'
 import fs from 'fs'
 import appRoot from 'app-root-path'
 import excelHelper from '../helpers/excel.helper.js'
 import logService from '../services/log.service.js'
+import resultService from '../services/result.service.js'
+import surveyService from '../services/survey.service.js'
 
 class ResultController {
-    async getAnketaResults(req, res) {
+
+    async getSurveyResults(req, res) {
         try {
-            const results = await Result.find({
-                anketa_id: req.params.id
-            })
+            const results = await resultService.getSurveyResults(req.params.id)
             res.json(results)
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
     }
 
-    async postAnketaResult(req, res) {
-        if (!req.body.anketa_id)
-            res.json({ message: 'Missing anketa id' })
-        const survey = await Anketa.findOne({_id: req.body.anketa_id})
-        req.body.anketa_id = new mongoose.Types.ObjectId(req.body.anketa_id)
-        if (req.cookies['pin'])
-        req.body.pin = req.cookies['pin']
+    async postSurveyResult(req, res) {
         try {
-            const newResult = await new Result(req.body).save()
+            const result = await resultService.postSurveyResult(req.body)
+            const survey = await surveyService.getSurvey(req.body.anketa_id)
             logService.logAction('result', req, survey.toJSON().name.cs)
-            res.json(newResult)
+            res.json(result)
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
@@ -36,7 +29,7 @@ class ResultController {
 
     async getAllResults(req, res) {
         try {
-            const results = await Result.find()
+            const results = await resultService.getAllResults()
             res.json(results)
         } catch (err) {
             res.status(500).json({ message: err.message })
@@ -45,7 +38,7 @@ class ResultController {
 
     async deleteSurveyResults(req, res) {
         try {
-            const results = await Result.deleteMany({ anketa_id: req.params.id })
+            const results = await resultService.deleteSurveyResults(req.params.id)
             res.json(results)
         } catch (err) {
             res.status(500).json({ message: err.message })
@@ -54,9 +47,8 @@ class ResultController {
 
     async getExcelResults(req, res) {
         try {
-            const results = await Result.find({ anketa_id: req.params.id })
-            const survey = await Anketa.findOne({ _id: req.params.id })
-
+            const results = await resultService.getSurveyResults(req.params.id)
+            const survey = await surveyService.getSurvey(req.params.id)
             let excelFile = await excelHelper.generateExcel()
             excelFile = await excelHelper.addList(excelFile, survey, results)
 
@@ -67,7 +59,6 @@ class ResultController {
                     fs.unlinkSync(`${appRoot}/tmp/${filename}.xlsx`)
                 })
             })
-
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
@@ -75,10 +66,10 @@ class ResultController {
 
     async getAllExcelResults(req, res) {
         try {
-            const surveys = await Anketa.find({user_id: req.params.userId})
+            const surveys = await surveyService.getSurveys(req.params.userId)
             let excelFile = await excelHelper.generateExcel()
             for (let survey of surveys) {
-                const results = await Result.find({ anketa_id: survey._id })
+                const results = await resultService.getSurveyResults(survey._id)
                 excelFile = await excelHelper.addList(excelFile, survey, results)
             }
 
@@ -89,11 +80,11 @@ class ResultController {
                     fs.unlinkSync(`${appRoot}/tmp/${filename}.xlsx`)
                 })
             })
-
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
     }
+    
 }
 
 const resultsController = new ResultController()

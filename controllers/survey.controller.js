@@ -1,4 +1,4 @@
-import Anketa from '../models/anketa.model.js'
+import Survey from '../models/survey.model.js'
 import User from '../models/user.model.js'
 import qrcode from 'qrcode'
 import mongoose from 'mongoose'
@@ -8,7 +8,7 @@ import imageminPngquant from 'imagemin-pngquant'
 import imageminJpegtran from 'imagemin-jpegtran'
 import logService from '../services/log.service.js'
 
-class AnketyController {
+class SurveyController {
     async createAnketa(req, res) {
         const obj = JSON.parse(req.body.anketa)
         if (obj.type === 1) {
@@ -45,7 +45,7 @@ class AnketyController {
                 }
             }
             obj.user_id = req.user.id
-            const anketa = new Anketa(obj)
+            const anketa = new Survey(obj)
             try {
                 const newAnketa = await anketa.save()
                 qrcode.toFile(`public/qrcodes/${newAnketa._id}.png`, `https://skodaquiz.com/play/${newAnketa._id}`, { width: 1024 }, () => {
@@ -83,7 +83,7 @@ class AnketyController {
             }
             obj.user_id = req.user.id
             try {
-                const anketa = new Anketa(obj)
+                const anketa = new Survey(obj)
                 const newSurvey = await anketa.save()
                 qrcode.toFile(`public/qrcodes/${newSurvey._id}.png`, `https://skodaquiz.com/play/${newSurvey._id}`, { width: 1024 }, () => {
                 })
@@ -99,7 +99,6 @@ class AnketyController {
     async updateSurvey(req, res) {
         const obj = JSON.parse(req.body.anketa)
         if (obj.type === 2) {
-            console.log(req.files)
             if (req.files) {
                 for (let i = 0; i < obj.questions.length; i++) {
                     obj.questions[i]._id = new mongoose.Types.ObjectId()
@@ -112,13 +111,13 @@ class AnketyController {
             }
 
             try {
-                const survey = await Anketa.findById(req.params.id);
+                const survey = await Survey.findById(req.params.id)
                 for (let i = 0; i < obj.questions.length; i++) {
                     if (!obj.questions[i].img && survey.questions.length >= obj.questions.length)
                         obj.questions[i].img = survey.questions[i].img
                 }
                 obj.updated = Date.now()
-                const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
+                const updatedSurvey = await Survey.findOneAndUpdate({ _id: req.params.id }, obj)
                 logService.logAction('update', req, updatedSurvey.toJSON().name.cs)
                 res.status(201).json(updatedSurvey)
             } catch (err) {
@@ -160,13 +159,13 @@ class AnketyController {
             }
             obj.user_id = req.user.id
             try {
-                const survey = await Anketa.findById(req.params.id);
+                const survey = await Survey.findById(req.params.id)
                 for (let i = 0; i < obj.questions.length; i++) {
                     if (!obj.questions.img && survey.questions.length >= obj.questions.length)
                         obj.questions[i].img = survey.questions[i].img
                 }
                 obj.updated = Date.now()
-                const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, obj)
+                const updatedSurvey = await Survey.findOneAndUpdate({ _id: req.params.id }, obj)
                 logService.logAction('update', req, updatedSurvey.toJSON().name.cs)
                 res.status(201).json(updatedSurvey)
             } catch (err) {
@@ -176,9 +175,8 @@ class AnketyController {
     }
 
     async getAll(req, res) {
-        console.log(req.user)
         try {
-            const ankety = await Anketa.aggregate([
+            const ankety = await Survey.aggregate([
                 {
                     $match: {
                         user_id: mongoose.Types.ObjectId(req.user.id)
@@ -211,7 +209,7 @@ class AnketyController {
     async getIvetSurveys(req, res) {
         try {
             const { id } = await User.findOne({ username: 'IVET' })
-            const surveys = await Anketa.find({ user_id: id })
+            const surveys = await Survey.find({ user_id: id })
             res.json(surveys)
         } catch (err) {
             res.status(500).json({ message: err.message })
@@ -222,7 +220,7 @@ class AnketyController {
     async getOne(req, res) {
         try {
             // const anketa = await Anketa.find({ user_id: req.user.id, _id: req.params.id })
-            const anketa = await Anketa.aggregate([
+            const anketa = await Survey.aggregate([
                 {
                     $match: {
                         _id: mongoose.Types.ObjectId(req.params.id)
@@ -255,16 +253,15 @@ class AnketyController {
 
     async deleteAnketa(req, res) {
         try {
-            const survey = await Anketa.findById(req.params.id)
+            const survey = await Survey.findById(req.params.id)
             for (let question of survey.questions) {
-                console.log(question.img)
                 if (question.img)
                     fs.unlink(`public${question.img}`, err => { if (err) console.log(err) })
             }
 
-            const deleted = await Anketa.findByIdAndDelete(req.params.id)
+            const deleted = await Survey.findByIdAndDelete(req.params.id)
             logService.logAction('delete', req, deleted.toJSON().name.cs)
-            res.json({ message: 'Anketa removed' })
+            res.json({ message: 'Survey removed' })
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
@@ -272,8 +269,7 @@ class AnketyController {
 
     async enableSurvey(req, res) {
         try {
-            console.log(req.body)
-            const updatedSurvey = await Anketa.findOneAndUpdate({ _id: req.params.id }, { enabled: req.body.enabled })
+            const updatedSurvey = await Survey.findOneAndUpdate({ _id: req.params.id }, { enabled: req.body.enabled })
             res.json(updatedSurvey)
         } catch (error) {
             res.status(500).json({ message: err.message })
@@ -282,7 +278,7 @@ class AnketyController {
 
     async duplicateSurvey(req, res) {
         try {
-            const survey = await Anketa.findById(req.params.id).exec()
+            const survey = await Survey.findById(req.params.id).exec()
             survey._id = new mongoose.Types.ObjectId()
             survey.name = { cs: `${survey.name.get('cs')} kopie` }
             survey.isNew = true
@@ -297,5 +293,5 @@ class AnketyController {
 
 }
 
-const anketyController = new AnketyController()
-export default anketyController
+const surveyController = new SurveyController()
+export default surveyController

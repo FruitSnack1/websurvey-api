@@ -18,7 +18,7 @@ else console.log('Server running in devel settings')
 
 const app = express()
 
-app.use(cookieParser());
+app.use(cookieParser())
 app.use(bodyParser.json({ extended: false }))
 app.use(express.static('public'))
 if (PROD)

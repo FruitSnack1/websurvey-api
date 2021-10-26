@@ -44,7 +44,7 @@ const answerSchema = new mongoose.Schema({
     _id: false
 })
 
-const anketaSchama = new mongoose.Schema({
+const surveySchama = new mongoose.Schema({
     name: {
         type: Map,
         of: String,
@@ -115,4 +115,4 @@ const anketaSchama = new mongoose.Schema({
     collection: 'ankety'
 })
 
-export default mongoose.model('Anketa', anketaSchama)
+export default mongoose.model('Survey', surveySchama)

@@ -3,7 +3,6 @@ import geoip from 'geoip-lite'
 
 class LogService{
     async logAction(action, req, survey = ''){
-        console.log('saving log')
         try {
             const geo = geoip.lookup(req.headers['x-forwarded-for'] || req.connection.remoteAddress)
             const log = {
